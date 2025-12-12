@@ -1,5 +1,5 @@
 {
-  "name": "@sora-tech/dlmm",
+  "name": "@soratechdlmm/dlmm-sdk",
   "version": "0.0.1",
   "description": "SoraTech DLMM SDK",
   "main": "./dist/index.js",
@@ -18,9 +18,10 @@
     "dist/**"
   ],
   "scripts": {
-    "build": "tsup",
+    "build": "npx tsup --dts",
     "start": "npm run build -- --watch",
-    "test": "jest 'src/test/.*\\.test\\.ts$'"
+    "test": "jest 'src/test/.*\\.test\\.ts$'",
+    "prepublishOnly": "npm run build"
   },
   "devDependencies": {
     "@babel/preset-env": "^7.22.5",
@@ -56,5 +57,10 @@
     "amm",
     "dex"
   ],
+  "author": "",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SoraTechDLMM/DLMM_SDK.git"
+  },
   "license": "ISC"
 }

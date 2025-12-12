@@ -1,5 +1,5 @@
 {
-  "name": "@soratechdlmm/dlmm-sdk",
+  "name": "@nazarznet/dlmm-sdk",
   "version": "0.0.1",
   "description": "SoraTech DLMM SDK",
   "main": "./dist/index.js",

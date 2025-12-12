@@ -1,5 +1,5 @@
 {
-  "name": "@soratechdlmm/dlmm-sdk",
+  "name": "@nazarznet/dlmm-sdk",
   "version": "0.0.1",
   "description": "SoraTech DLMM SDK",
   "main": "./dist/index.js",
@@ -60,7 +60,7 @@
   "author": "",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/SoraTechDLMM/DLMM_SDK.git"
+    "url": "git+https://github.com/NazarZnet/DLMM_SDK.git"
   },
   "license": "ISC"
 }

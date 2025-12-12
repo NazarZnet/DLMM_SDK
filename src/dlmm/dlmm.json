@@ -1,0 +1,1955 @@
+{
+  "address": "7PAPPM8tAPuhAmBsa7kbTcXNA6xXK3skXLdJLZ72sqZW",
+  "metadata": {
+    "name": "dlmm_contract_soratech",
+    "version": "0.1.0",
+    "spec": "0.1.0",
+    "description": "Created with Anchor"
+  },
+  "instructions": [
+    {
+      "name": "add_liquidity",
+      "docs": ["Add liquidity to a liquidity book pair"],
+      "discriminator": [181, 157, 89, 67, 143, 182, 52, 72],
+      "accounts": [
+        {
+          "name": "position",
+          "docs": ["User position account to update with new liquidity shares"],
+          "writable": true
+        },
+        {
+          "name": "lb_pair",
+          "docs": ["Liquidity book pair account containing bins and reserves"],
+          "writable": true,
+          "relations": ["position", "bin_array_bitmap_extension"]
+        },
+        {
+          "name": "bin_array_bitmap_extension",
+          "docs": [
+            "Optional bitmap extension for tracking bin array initialization"
+          ],
+          "writable": true,
+          "optional": true
+        },
+        {
+          "name": "user_token_x",
+          "docs": ["User's token X account to transfer from"],
+          "writable": true
+        },
+        {
+          "name": "user_token_y",
+          "docs": ["User's token Y account to transfer from"],
+          "writable": true
+        },
+        {
+          "name": "reserve_x",
+          "docs": ["Pair's token X reserve vault"],
+          "writable": true,
+          "relations": ["lb_pair"]
+        },
+        {
+          "name": "reserve_y",
+          "docs": ["Pair's token Y reserve vault"],
+          "writable": true,
+          "relations": ["lb_pair"]
+        },
+        {
+          "name": "token_x_mint",
+          "docs": ["Base token mint account"],
+          "relations": ["lb_pair"]
+        },
+        {
+          "name": "token_y_mint",
+          "docs": ["Quote token mint account"],
+          "relations": ["lb_pair"]
+        },
+        {
+          "name": "sender",
+          "docs": ["Transaction sender and position owner"],
+          "signer": true
+        },
+        {
+          "name": "token_x_program",
+          "docs": ["SPL Token program interface for token X"]
+        },
+        {
+          "name": "token_y_program",
+          "docs": ["SPL Token program interface for token Y"]
+        },
+        {
+          "name": "system_program",
+          "docs": ["Solana system program for account creation"],
+          "address": "11111111111111111111111111111111"
+        },
+        {
+          "name": "event_authority",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  95, 95, 101, 118, 101, 110, 116, 95, 97, 117, 116, 104, 111,
+                  114, 105, 116, 121
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "program"
+        }
+      ],
+      "args": [
+        {
+          "name": "liquidity_parameter",
+          "type": {
+            "defined": {
+              "name": "LiquidityParameter"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "claim_fee",
+      "docs": ["Claim accumulated fees from a position"],
+      "discriminator": [169, 32, 79, 137, 136, 232, 70, 137],
+      "accounts": [
+        {
+          "name": "position",
+          "writable": true
+        },
+        {
+          "name": "lb_pair",
+          "writable": true,
+          "relations": ["position", "bin_array_bitmap_extension"]
+        },
+        {
+          "name": "bin_array_bitmap_extension",
+          "optional": true
+        },
+        {
+          "name": "user_token_x",
+          "writable": true
+        },
+        {
+          "name": "user_token_y",
+          "writable": true
+        },
+        {
+          "name": "reserve_x",
+          "writable": true,
+          "relations": ["lb_pair"]
+        },
+        {
+          "name": "reserve_y",
+          "writable": true,
+          "relations": ["lb_pair"]
+        },
+        {
+          "name": "token_x_mint",
+          "relations": ["lb_pair"]
+        },
+        {
+          "name": "token_y_mint",
+          "relations": ["lb_pair"]
+        },
+        {
+          "name": "sender",
+          "signer": true
+        },
+        {
+          "name": "token_x_program"
+        },
+        {
+          "name": "token_y_program"
+        },
+        {
+          "name": "event_authority",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  95, 95, 101, 118, 101, 110, 116, 95, 97, 117, 116, 104, 111,
+                  114, 105, 116, 121
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "program"
+        }
+      ],
+      "args": [
+        {
+          "name": "min_bin_id",
+          "type": "i32"
+        },
+        {
+          "name": "max_bin_id",
+          "type": "i32"
+        }
+      ]
+    },
+    {
+      "name": "initialize",
+      "docs": ["Initialize the program"],
+      "discriminator": [175, 175, 109, 31, 13, 152, 155, 237],
+      "accounts": [],
+      "args": []
+    },
+    {
+      "name": "initialize_bin_array",
+      "docs": ["Initialize a new bin array for a liquidity book pair"],
+      "discriminator": [35, 86, 19, 185, 78, 212, 75, 211],
+      "accounts": [
+        {
+          "name": "lb_pair",
+          "docs": ["The liquidity book pair that will own this bin array"]
+        },
+        {
+          "name": "bin_array",
+          "docs": ["The bin array account being initialized"],
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [98, 105, 110, 95, 97, 114, 114, 97, 121]
+              },
+              {
+                "kind": "account",
+                "path": "lb_pair"
+              },
+              {
+                "kind": "arg",
+                "path": "index"
+              }
+            ]
+          }
+        },
+        {
+          "name": "funder",
+          "docs": ["Account paying for the bin array creation"],
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "system_program",
+          "docs": ["System program for account creation"],
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "index",
+          "type": "i64"
+        }
+      ]
+    },
+    {
+      "name": "initialize_bin_array_bitmap_extension",
+      "docs": ["Initialize a new bitmap extension for a liquidity book pair."],
+      "discriminator": [47, 157, 226, 180, 12, 240, 33, 71],
+      "accounts": [
+        {
+          "name": "lb_pair",
+          "docs": [
+            "The liquidity book pair that will own this bitmap extension"
+          ]
+        },
+        {
+          "name": "bin_array_bitmap_extension",
+          "docs": ["The bitmap extension account being initialized"],
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [98, 105, 116, 109, 97, 112]
+              },
+              {
+                "kind": "account",
+                "path": "lb_pair"
+              }
+            ]
+          }
+        },
+        {
+          "name": "funder",
+          "docs": ["Account paying for the bitmap extension creation"],
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "system_program",
+          "docs": ["System program for account creation"],
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "initialize_lb_pair",
+      "docs": ["Initialize a new DLMM liquidity book pair"],
+      "discriminator": [45, 154, 237, 210, 221, 15, 166, 92],
+      "accounts": [
+        {
+          "name": "lb_pair",
+          "docs": ["Liquidity book pair account to initialize"],
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [108, 98, 95, 112, 97, 105, 114]
+              },
+              {
+                "kind": "account",
+                "path": "token_mint_x"
+              },
+              {
+                "kind": "account",
+                "path": "token_mint_y"
+              },
+              {
+                "kind": "arg",
+                "path": "bin_step"
+              }
+            ]
+          }
+        },
+        {
+          "name": "token_mint_x",
+          "docs": ["Base token mint account"]
+        },
+        {
+          "name": "token_mint_y",
+          "docs": ["Quote token mint account"]
+        },
+        {
+          "name": "reserve_x",
+          "docs": ["Token vault for base asset reserves"],
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "account",
+                "path": "lb_pair"
+              },
+              {
+                "kind": "account",
+                "path": "token_mint_x"
+              }
+            ]
+          }
+        },
+        {
+          "name": "reserve_y",
+          "docs": ["Token vault for quote asset reserves"],
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "account",
+                "path": "lb_pair"
+              },
+              {
+                "kind": "account",
+                "path": "token_mint_y"
+              }
+            ]
+          }
+        },
+        {
+          "name": "funder",
+          "docs": ["Account that pays for the initialization"],
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "fee_owner",
+          "docs": ["Protocol fee recipient account"]
+        },
+        {
+          "name": "token_program",
+          "docs": ["SPL Token program interface"]
+        },
+        {
+          "name": "system_program",
+          "docs": ["Solana system program for account creation"],
+          "address": "11111111111111111111111111111111"
+        },
+        {
+          "name": "rent",
+          "docs": ["Solana rent sysvar for rent calculations"],
+          "address": "SysvarRent111111111111111111111111111111111"
+        },
+        {
+          "name": "event_authority",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  95, 95, 101, 118, 101, 110, 116, 95, 97, 117, 116, 104, 111,
+                  114, 105, 116, 121
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "program"
+        }
+      ],
+      "args": [
+        {
+          "name": "active_id",
+          "type": "i32"
+        },
+        {
+          "name": "bin_step",
+          "type": "u16"
+        }
+      ]
+    },
+    {
+      "name": "initialize_position",
+      "docs": ["Initialize a position for a LB pair and owner"],
+      "discriminator": [219, 192, 234, 71, 190, 191, 102, 80],
+      "accounts": [
+        {
+          "name": "position",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [112, 111, 115, 105, 116, 105, 111, 110]
+              },
+              {
+                "kind": "account",
+                "path": "lb_pair"
+              },
+              {
+                "kind": "account",
+                "path": "owner"
+              },
+              {
+                "kind": "arg",
+                "path": "lower_bin_id"
+              },
+              {
+                "kind": "arg",
+                "path": "width"
+              }
+            ]
+          }
+        },
+        {
+          "name": "lb_pair"
+        },
+        {
+          "name": "owner"
+        },
+        {
+          "name": "payer",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        },
+        {
+          "name": "event_authority",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  95, 95, 101, 118, 101, 110, 116, 95, 97, 117, 116, 104, 111,
+                  114, 105, 116, 121
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "program"
+        }
+      ],
+      "args": [
+        {
+          "name": "lower_bin_id",
+          "type": "i32"
+        },
+        {
+          "name": "width",
+          "type": "i32"
+        }
+      ]
+    },
+    {
+      "name": "remove_all_liquidity",
+      "discriminator": [10, 51, 61, 35, 112, 105, 24, 85],
+      "accounts": [
+        {
+          "name": "position",
+          "docs": ["User position account to update with new liquidity shares"],
+          "writable": true
+        },
+        {
+          "name": "lb_pair",
+          "docs": ["Liquidity book pair account containing bins and reserves"],
+          "writable": true,
+          "relations": ["position", "bin_array_bitmap_extension"]
+        },
+        {
+          "name": "bin_array_bitmap_extension",
+          "docs": [
+            "Optional bitmap extension for tracking bin array initialization"
+          ],
+          "writable": true,
+          "optional": true
+        },
+        {
+          "name": "user_token_x",
+          "docs": ["User's token X account to transfer from"],
+          "writable": true
+        },
+        {
+          "name": "user_token_y",
+          "docs": ["User's token Y account to transfer from"],
+          "writable": true
+        },
+        {
+          "name": "reserve_x",
+          "docs": ["Pair's token X reserve vault"],
+          "writable": true,
+          "relations": ["lb_pair"]
+        },
+        {
+          "name": "reserve_y",
+          "docs": ["Pair's token Y reserve vault"],
+          "writable": true,
+          "relations": ["lb_pair"]
+        },
+        {
+          "name": "token_x_mint",
+          "docs": ["Base token mint account"],
+          "relations": ["lb_pair"]
+        },
+        {
+          "name": "token_y_mint",
+          "docs": ["Quote token mint account"],
+          "relations": ["lb_pair"]
+        },
+        {
+          "name": "sender",
+          "docs": ["Transaction sender and position owner"],
+          "signer": true
+        },
+        {
+          "name": "token_x_program",
+          "docs": ["SPL Token program interface for token X"]
+        },
+        {
+          "name": "token_y_program",
+          "docs": ["SPL Token program interface for token Y"]
+        },
+        {
+          "name": "system_program",
+          "docs": ["Solana system program for account creation"],
+          "address": "11111111111111111111111111111111"
+        },
+        {
+          "name": "event_authority",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  95, 95, 101, 118, 101, 110, 116, 95, 97, 117, 116, 104, 111,
+                  114, 105, 116, 121
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "program"
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "swap",
+      "docs": ["Swap tokens in a liquidity book pair"],
+      "discriminator": [248, 198, 158, 145, 225, 117, 135, 200],
+      "accounts": [
+        {
+          "name": "lb_pair",
+          "writable": true,
+          "relations": ["bin_array_bitmap_extension"]
+        },
+        {
+          "name": "bin_array_bitmap_extension",
+          "optional": true
+        },
+        {
+          "name": "reserve_x",
+          "writable": true,
+          "relations": ["lb_pair"]
+        },
+        {
+          "name": "reserve_y",
+          "writable": true,
+          "relations": ["lb_pair"]
+        },
+        {
+          "name": "user_token_in",
+          "writable": true
+        },
+        {
+          "name": "user_token_out",
+          "writable": true
+        },
+        {
+          "name": "token_x_mint",
+          "relations": ["lb_pair"]
+        },
+        {
+          "name": "token_y_mint",
+          "relations": ["lb_pair"]
+        },
+        {
+          "name": "host_fee_in",
+          "writable": true,
+          "optional": true
+        },
+        {
+          "name": "user",
+          "signer": true
+        },
+        {
+          "name": "token_x_program"
+        },
+        {
+          "name": "token_y_program"
+        },
+        {
+          "name": "event_authority",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  95, 95, 101, 118, 101, 110, 116, 95, 97, 117, 116, 104, 111,
+                  114, 105, 116, 121
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "program"
+        }
+      ],
+      "args": [
+        {
+          "name": "amount_in",
+          "type": "u64"
+        },
+        {
+          "name": "min_amount_out",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "update_fee_parameters",
+      "docs": ["Update fee parameters for a liquidity book pair"],
+      "discriminator": [128, 128, 208, 91, 246, 53, 31, 176],
+      "accounts": [
+        {
+          "name": "lb_pair",
+          "docs": ["Liquidity book pair account to update"],
+          "writable": true
+        },
+        {
+          "name": "admin",
+          "docs": ["Authorized admin signer who can update fee parameters"],
+          "signer": true
+        },
+        {
+          "name": "event_authority",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  95, 95, 101, 118, 101, 110, 116, 95, 97, 117, 116, 104, 111,
+                  114, 105, 116, 121
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "program"
+        }
+      ],
+      "args": [
+        {
+          "name": "fee_parameter",
+          "type": {
+            "defined": {
+              "name": "FeeParameter"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "withdraw_protocol_fee",
+      "docs": ["Withdraw accumulated protocol fees from a liquidity book pair"],
+      "discriminator": [158, 201, 158, 189, 33, 93, 162, 103],
+      "accounts": [
+        {
+          "name": "lb_pair",
+          "docs": [
+            "The liquidity book pair containing accumulated protocol fees"
+          ],
+          "writable": true
+        },
+        {
+          "name": "reserve_x",
+          "docs": ["Token X reserve vault (source of fee withdrawal)"],
+          "writable": true,
+          "relations": ["lb_pair"]
+        },
+        {
+          "name": "reserve_y",
+          "docs": ["Token Y reserve vault (source of fee withdrawal)"],
+          "writable": true,
+          "relations": ["lb_pair"]
+        },
+        {
+          "name": "token_x_mint",
+          "docs": ["Token X mint information for validation"],
+          "relations": ["lb_pair"]
+        },
+        {
+          "name": "token_y_mint",
+          "docs": ["Token Y mint information for validation"],
+          "relations": ["lb_pair"]
+        },
+        {
+          "name": "receiver_token_x",
+          "docs": ["Destination account for withdrawn token X fees"],
+          "writable": true
+        },
+        {
+          "name": "receiver_token_y",
+          "docs": ["Destination account for withdrawn token Y fees"],
+          "writable": true
+        },
+        {
+          "name": "fee_owner",
+          "docs": ["Authorized fee owner who can withdraw protocol fees"],
+          "signer": true,
+          "relations": ["lb_pair"]
+        },
+        {
+          "name": "token_x_program",
+          "docs": ["SPL Token program for token X transfers"]
+        },
+        {
+          "name": "token_y_program",
+          "docs": ["SPL Token program for token Y transfers"]
+        }
+      ],
+      "args": [
+        {
+          "name": "amount_x",
+          "type": "u64"
+        },
+        {
+          "name": "amount_y",
+          "type": "u64"
+        }
+      ]
+    }
+  ],
+  "accounts": [
+    {
+      "name": "BinArray",
+      "discriminator": [92, 142, 92, 220, 5, 148, 70, 181]
+    },
+    {
+      "name": "BinArrayBitmapExtension",
+      "discriminator": [80, 111, 124, 113, 55, 237, 18, 5]
+    },
+    {
+      "name": "LbPair",
+      "discriminator": [33, 11, 49, 98, 181, 101, 177, 13]
+    },
+    {
+      "name": "Position",
+      "discriminator": [170, 188, 143, 228, 122, 64, 247, 208]
+    }
+  ],
+  "events": [
+    {
+      "name": "AddLiquidity",
+      "discriminator": [31, 94, 125, 90, 227, 52, 61, 186]
+    },
+    {
+      "name": "FeeParameterUpdate",
+      "discriminator": [48, 76, 241, 117, 144, 215, 242, 44]
+    },
+    {
+      "name": "LbPairCreate",
+      "discriminator": [185, 74, 252, 125, 27, 215, 188, 111]
+    },
+    {
+      "name": "PositionCreate",
+      "discriminator": [144, 142, 252, 84, 157, 53, 37, 121]
+    }
+  ],
+  "errors": [
+    {
+      "code": 6000,
+      "name": "InvalidAdmin",
+      "msg": "Access denied: Signer is not an authorized admin"
+    },
+    {
+      "code": 6001,
+      "name": "IdenticalTokenMints",
+      "msg": "Token mints cannot be identical"
+    },
+    {
+      "code": 6002,
+      "name": "InvalidTokenDecimals",
+      "msg": "Token decimals cannot exceed 18"
+    },
+    {
+      "code": 6003,
+      "name": "InvalidBinStep",
+      "msg": "Bin step must be between 1 and 100 basis points (0.0001 to 0.01)"
+    },
+    {
+      "code": 6004,
+      "name": "InvalidInput",
+      "msg": "BinArrayManager invalid input"
+    },
+    {
+      "code": 6005,
+      "name": "NonContinuousBinArrays",
+      "msg": "Arrays are not loaded aligned to lower bin id"
+    },
+    {
+      "code": 6006,
+      "name": "InvalidActiveId",
+      "msg": "Active ID must be within valid range"
+    },
+    {
+      "code": 6007,
+      "name": "InvalidBinPrice",
+      "msg": "Invalid bin price: must be greater than 0"
+    },
+    {
+      "code": 6008,
+      "name": "InvalidBinRange",
+      "msg": "Invalid bin range"
+    },
+    {
+      "code": 6009,
+      "name": "InvalidBinId",
+      "msg": "Bin ID is outside the valid range"
+    },
+    {
+      "code": 6010,
+      "name": "InvalidStartBinIndex",
+      "msg": "Start bin index is outside the valid range"
+    },
+    {
+      "code": 6011,
+      "name": "BinRangeTooLarge",
+      "msg": "Range must be within the limit"
+    },
+    {
+      "code": 6012,
+      "name": "NoBinArraysProvided",
+      "msg": "No bin arrays provided in remaining accounts"
+    },
+    {
+      "code": 6013,
+      "name": "BinArrayVerificationFailure",
+      "msg": "Bin arrays does not match expected"
+    },
+    {
+      "code": 6014,
+      "name": "BinArrayNotWritable",
+      "msg": "Bin array account is not writable"
+    },
+    {
+      "code": 6015,
+      "name": "BinArrayMismatch",
+      "msg": "Bin array does not belong to the specified lb_pair"
+    },
+    {
+      "code": 6016,
+      "name": "BinIdOutsidePositionRange",
+      "msg": "Bin ID is outside position range"
+    },
+    {
+      "code": 6017,
+      "name": "BinArrayNotFound",
+      "msg": "Cannot find bin array with liquidity"
+    },
+    {
+      "code": 6018,
+      "name": "BitmapExtensionAccountIsNotProvided",
+      "msg": "Bitmap extension account is not provided"
+    },
+    {
+      "code": 6019,
+      "name": "InvalidTokenDistributionForBin",
+      "msg": "Invalid token distribution for bin relative to active bin"
+    },
+    {
+      "code": 6020,
+      "name": "InvalidLbPair",
+      "msg": "Invalid liquidity book pair"
+    },
+    {
+      "code": 6021,
+      "name": "MathOverflow",
+      "msg": "Math operation overflow"
+    },
+    {
+      "code": 6022,
+      "name": "CannotFindNonZeroLiquidityBinArrayId",
+      "msg": "Cannot find non-zero liquidity binArrayId"
+    },
+    {
+      "code": 6023,
+      "name": "UnexpectedSwapError",
+      "msg": "Unexpected swap error"
+    },
+    {
+      "code": 6024,
+      "name": "BinArrayError",
+      "msg": "Unexpected bin_array error"
+    },
+    {
+      "code": 6025,
+      "name": "SwapCalculationError",
+      "msg": "Swap calculation error"
+    },
+    {
+      "code": 6026,
+      "name": "InvalidSwapParams",
+      "msg": "Invalid swap parameters"
+    },
+    {
+      "code": 6027,
+      "name": "PairInsufficientLiquidity",
+      "msg": "Pair has insufficient liquidity for the requested operation"
+    },
+    {
+      "code": 6028,
+      "name": "UnauthorizedFeeOwner",
+      "msg": "Position owner must be sender"
+    },
+    {
+      "code": 6029,
+      "name": "NoFeesToClaim",
+      "msg": "No fees to claim found"
+    },
+    {
+      "code": 6030,
+      "name": "InvalidPositionWidth",
+      "msg": "Position width cant be more that  (MAX_POSITION_BINS - 1)"
+    },
+    {
+      "code": 6031,
+      "name": "BinIdOutsidePairRange",
+      "msg": "Bin ID is outside pair valid range"
+    },
+    {
+      "code": 6032,
+      "name": "DivisionByZero",
+      "msg": "Division by zero"
+    },
+    {
+      "code": 6033,
+      "name": "BinError",
+      "msg": "Unexpected bin error"
+    },
+    {
+      "code": 6034,
+      "name": "InsufficientLiquidity",
+      "msg": "Not enough liquidity to claim fees"
+    },
+    {
+      "code": 6035,
+      "name": "NotEnoughProtocolFees",
+      "msg": "Not enough protocol fees for withdrawal"
+    },
+    {
+      "code": 6036,
+      "name": "TypeCastFailed",
+      "msg": "Type cast error"
+    },
+    {
+      "code": 6037,
+      "name": "ZeroAmount",
+      "msg": "Amount cannot be zero"
+    },
+    {
+      "code": 6038,
+      "name": "DistributionTotalInvalid",
+      "msg": "Invalid total distribution: must be exactly 0 or 100"
+    },
+    {
+      "code": 6039,
+      "name": "EmptyDistribution",
+      "msg": "No bin distributions provided"
+    },
+    {
+      "code": 6040,
+      "name": "TooManyBins",
+      "msg": "Too many bins provided. It must be less than or equal to MAX_BIN_PER_ARRAY"
+    },
+    {
+      "code": 6041,
+      "name": "ExcessiveFeeUpdate",
+      "msg": "Fee parameter update exceeds maximum allowed change (max 1% or 100% of current value)"
+    }
+  ],
+  "types": [
+    {
+      "name": "AddLiquidity",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "lb_pair",
+            "type": "pubkey"
+          },
+          {
+            "name": "from",
+            "type": "pubkey"
+          },
+          {
+            "name": "position",
+            "type": "pubkey"
+          },
+          {
+            "name": "amounts",
+            "type": {
+              "array": ["u64", 2]
+            }
+          },
+          {
+            "name": "active_bin_id",
+            "type": "i32"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Bin",
+      "docs": [
+        "Individual bin data containing liquidity and reserve information.",
+        "",
+        "Each bin represents a discrete price point in the liquidity book where users can",
+        "provide liquidity. Bins store token amounts and track liquidity shares for",
+        "proportional withdrawal calculations."
+      ],
+      "serialization": "bytemuck",
+      "repr": {
+        "kind": "c"
+      },
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "amount_x",
+            "docs": ["Amount of token X in the bin (excluding protocol fees)"],
+            "type": "u64"
+          },
+          {
+            "name": "amount_y",
+            "docs": ["Amount of token Y in the bin (excluding protocol fees)"],
+            "type": "u64"
+          },
+          {
+            "name": "price",
+            "docs": [
+              "Cached bin price to avoid recalculation during operations"
+            ],
+            "type": "u128"
+          },
+          {
+            "name": "liquidity_supply",
+            "docs": [
+              "Total liquidity shares issued for this bin (equivalent to LP token supply)"
+            ],
+            "type": "u128"
+          },
+          {
+            "name": "reward_per_token_stored",
+            "docs": ["reward_a_per_token_stored"],
+            "type": {
+              "array": ["u128", 2]
+            }
+          },
+          {
+            "name": "fee_amount_x_per_token_stored",
+            "docs": ["Accumulated fee amount of token X per liquidity share"],
+            "type": "u128"
+          },
+          {
+            "name": "fee_amount_y_per_token_stored",
+            "docs": ["Accumulated fee amount of token Y per liquidity share"],
+            "type": "u128"
+          }
+        ]
+      }
+    },
+    {
+      "name": "BinArray",
+      "docs": [
+        "Array of bins covering a specific range of bin IDs.",
+        "",
+        "Each bin array contains up to MAX_BIN_PER_ARRAY bins and represents a contiguous",
+        "range of bin IDs. Multiple bin arrays can be linked to cover the full price range",
+        "of a liquidity pair. The array index determines which range of bin IDs it contains."
+      ],
+      "serialization": "bytemuck",
+      "repr": {
+        "kind": "c"
+      },
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "index",
+            "docs": [
+              "Array index determining the bin ID range (bins: index*MAX_BIN_PER_ARRAY to index*MAX_BIN_PER_ARRAY+MAX_BIN_PER_ARRAY-1)"
+            ],
+            "type": "i64"
+          },
+          {
+            "name": "_padding",
+            "docs": ["Padding for proper memory alignment"],
+            "type": {
+              "array": ["u8", 8]
+            }
+          },
+          {
+            "name": "lb_pair",
+            "docs": ["Associated liquidity book pair that owns this bin array"],
+            "type": "pubkey"
+          },
+          {
+            "name": "bins",
+            "docs": ["Individual bin data stored inline for efficient access"],
+            "type": {
+              "array": [
+                {
+                  "defined": {
+                    "name": "Bin"
+                  }
+                },
+                70
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "BinArrayBitmapExtension",
+      "docs": [
+        "Extended bitmap structure for tracking bin array initialization states.",
+        "",
+        "This structure provides extended bitmap tracking for bin arrays beyond the basic",
+        "bitmap capacity of the LbPair account. It uses separate bitmaps for positive",
+        "and negative bin array indices to efficiently track liquidity distribution",
+        "across a wider price range."
+      ],
+      "serialization": "bytemuck",
+      "repr": {
+        "kind": "c"
+      },
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "lb_pair",
+            "docs": [
+              "Associated liquidity book pair that owns this bitmap extension"
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "positive_bin_array_bitmap",
+            "docs": [
+              "Packed initialized bin array state for positive bin array indices"
+            ],
+            "type": {
+              "array": [
+                {
+                  "array": ["u64", 8]
+                },
+                12
+              ]
+            }
+          },
+          {
+            "name": "negative_bin_array_bitmap",
+            "docs": [
+              "Packed initialized bin array state for negative bin array indices"
+            ],
+            "type": {
+              "array": [
+                {
+                  "array": ["u64", 8]
+                },
+                12
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "BinLiquidityDistribution",
+      "docs": [
+        "Configuration for distributing liquidity to a specific bin in the DLMM.",
+        "",
+        "Each distribution specifies a target bin ID and the percentage of tokens",
+        "to allocate to that bin. Percentages are expressed as integers from 1-100."
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "bin_id",
+            "docs": ["Define the bin ID wish to deposit to."],
+            "type": "i32"
+          },
+          {
+            "name": "distribution_x",
+            "docs": [
+              "DistributionX (or distributionY) is the percentages of amountX (or amountY) you want to add to each bin."
+            ],
+            "type": "u16"
+          },
+          {
+            "name": "distribution_y",
+            "docs": [
+              "DistributionX (or distributionY) is the percentages of amountX (or amountY) you want to add to each bin."
+            ],
+            "type": "u16"
+          }
+        ]
+      }
+    },
+    {
+      "name": "FeeInfo",
+      "docs": [
+        "Tracks per-bin fee accumulation and pending claimable fees for a position."
+      ],
+      "serialization": "bytemuck",
+      "repr": {
+        "kind": "c"
+      },
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "fee_x_per_token_complete",
+            "type": "u128"
+          },
+          {
+            "name": "fee_y_per_token_complete",
+            "type": "u128"
+          },
+          {
+            "name": "fee_x_pending",
+            "type": "u64"
+          },
+          {
+            "name": "fee_y_pending",
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "FeeParameter",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "protocol_share",
+            "docs": [
+              "Portion of swap fees retained by the protocol by controlling protocol_share parameter. protocol_swap_fee = protocol_share * total_swap_fee"
+            ],
+            "type": "u16"
+          },
+          {
+            "name": "base_factor",
+            "docs": ["Base factor for base fee rate"],
+            "type": "u16"
+          }
+        ]
+      }
+    },
+    {
+      "name": "FeeParameterUpdate",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "lb_pair",
+            "type": "pubkey"
+          },
+          {
+            "name": "protocol_share",
+            "type": "u16"
+          },
+          {
+            "name": "base_factor",
+            "type": "u16"
+          }
+        ]
+      }
+    },
+    {
+      "name": "LbPair",
+      "docs": [
+        "Core DLMM trading pair account containing all pair state and configuration.",
+        "",
+        "This account stores the complete state of a liquidity book pair including token",
+        "configuration, fee parameters, active price bins, and liquidity distribution.",
+        "Uses zero-copy serialization for efficient on-chain access."
+      ],
+      "serialization": "bytemuck",
+      "repr": {
+        "kind": "c"
+      },
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "parameters",
+            "docs": ["Static fee configuration parameters"],
+            "type": {
+              "defined": {
+                "name": "StaticParameters"
+              }
+            }
+          },
+          {
+            "name": "v_parameters",
+            "docs": [
+              "Variable fee parameters that adjust based on market volatility"
+            ],
+            "type": {
+              "defined": {
+                "name": "VariableParameters"
+              }
+            }
+          },
+          {
+            "name": "last_updated_at",
+            "docs": ["Unix timestamp of the last trading interaction"],
+            "type": "i64"
+          },
+          {
+            "name": "activation_slot",
+            "docs": [
+              "Slot to enable the pair. Only available for permission pair."
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "swap_cap_deactivate_slot",
+            "docs": [
+              "Last slot until pool remove max_swapped_amount for buying"
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "max_swapped_amount",
+            "docs": [
+              "Max X swapped amount user can swap from y to x between activation_slot and last_slot"
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "bin_array_bitmap",
+            "docs": [
+              "Bitmap tracking liquidity distribution across price bins"
+            ],
+            "type": {
+              "array": ["u64", 16]
+            }
+          },
+          {
+            "name": "protocol_fee",
+            "docs": ["Accumulated protocol fees for both tokens"],
+            "type": {
+              "defined": {
+                "name": "ProtocolFee"
+              }
+            }
+          },
+          {
+            "name": "token_x_mint",
+            "docs": ["Base token mint address"],
+            "type": "pubkey"
+          },
+          {
+            "name": "token_y_mint",
+            "docs": ["Quote token mint address"],
+            "type": "pubkey"
+          },
+          {
+            "name": "reserve_x",
+            "docs": ["Token X reserve vault account"],
+            "type": "pubkey"
+          },
+          {
+            "name": "reserve_y",
+            "docs": ["Token Y reserve vault account"],
+            "type": "pubkey"
+          },
+          {
+            "name": "fee_owner",
+            "docs": ["Account authorized to collect protocol fees"],
+            "type": "pubkey"
+          },
+          {
+            "name": "base_key",
+            "docs": ["Base keypair. Only required for permission pair"],
+            "type": "pubkey"
+          },
+          {
+            "name": "whitelisted_wallet",
+            "docs": ["Whitelisted wallet"],
+            "type": {
+              "array": ["pubkey", 2]
+            }
+          },
+          {
+            "name": "active_id",
+            "docs": [
+              "Current active bin ID where trading activity is concentrated"
+            ],
+            "type": "i32"
+          },
+          {
+            "name": "bin_step",
+            "docs": ["Price step between adjacent bins in basis points"],
+            "type": "u16"
+          },
+          {
+            "name": "pair_type",
+            "docs": ["Type of the pair (0 = Permissionless, 1 = Permission)"],
+            "type": "u8"
+          },
+          {
+            "name": "status",
+            "docs": [
+              "Current operational status of the pair (0 = Enabled, 1 = Disabled)"
+            ],
+            "type": "u8"
+          },
+          {
+            "name": "bump_seed",
+            "docs": ["PDA bump seed for account derivation"],
+            "type": {
+              "array": ["u8", 1]
+            }
+          },
+          {
+            "name": "bin_step_seed",
+            "docs": ["Bin step encoded as bytes for PDA derivation"],
+            "type": {
+              "array": ["u8", 2]
+            }
+          },
+          {
+            "name": "_padding",
+            "docs": ["Memory alignment padding"],
+            "type": {
+              "array": ["u8", 5]
+            }
+          },
+          {
+            "name": "_reserved",
+            "docs": ["Reserved space for future protocol upgrades"],
+            "type": {
+              "array": ["u8", 64]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "LbPairCreate",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "lb_pair",
+            "type": "pubkey"
+          },
+          {
+            "name": "bin_step",
+            "type": "u16"
+          },
+          {
+            "name": "token_x",
+            "type": "pubkey"
+          },
+          {
+            "name": "token_y",
+            "type": "pubkey"
+          }
+        ]
+      }
+    },
+    {
+      "name": "LiquidityParameter",
+      "docs": [
+        "Parameters for adding liquidity to a DLMM liquidity book pair.",
+        "",
+        "Specifies the total token amounts and how they should be distributed",
+        "across multiple price bins according to DLMM rules."
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "amount_x",
+            "docs": ["Amount of X token to deposit"],
+            "type": "u64"
+          },
+          {
+            "name": "amount_y",
+            "docs": ["Amount of Y token to deposit"],
+            "type": "u64"
+          },
+          {
+            "name": "bin_liquidity_dist",
+            "docs": ["Liquidity distribution to each bins"],
+            "type": {
+              "vec": {
+                "defined": {
+                  "name": "BinLiquidityDistribution"
+                }
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "Position",
+      "docs": [
+        "User position account tracking liquidity shares across multiple bins.",
+        "",
+        "Each user can have one position per liquidity pair, which tracks their",
+        "liquidity shares across all bins where they have deposited tokens.",
+        "Uses zero-copy serialization for efficient on-chain access."
+      ],
+      "serialization": "bytemuck",
+      "repr": {
+        "kind": "c"
+      },
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "lb_pair",
+            "docs": ["The LB pair of this position"],
+            "type": "pubkey"
+          },
+          {
+            "name": "owner",
+            "docs": [
+              "Owner of the position. Client rely on this to to fetch their positions."
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "liquidity_shares",
+            "docs": [
+              "Liquidity shares of this position in bins (lower_bin_id <-> upper_bin_id). This is the same as LP concept."
+            ],
+            "type": {
+              "array": ["u128", 70]
+            }
+          },
+          {
+            "name": "reward_infos",
+            "docs": ["Farming reward information"],
+            "type": {
+              "array": [
+                {
+                  "defined": {
+                    "name": "UserRewardInfo"
+                  }
+                },
+                70
+              ]
+            }
+          },
+          {
+            "name": "lower_bin_id",
+            "docs": ["Lowest bin ID with liquidity in this position"],
+            "type": "i32"
+          },
+          {
+            "name": "upper_bin_id",
+            "docs": ["Highest bin ID with liquidity in this position"],
+            "type": "i32"
+          },
+          {
+            "name": "last_updated_at",
+            "docs": ["Unix timestamp of last position modification"],
+            "type": "i64"
+          },
+          {
+            "name": "fee_infos",
+            "docs": ["Information about claimed and unclaimed fees"],
+            "type": {
+              "array": [
+                {
+                  "defined": {
+                    "name": "FeeInfo"
+                  }
+                },
+                70
+              ]
+            }
+          },
+          {
+            "name": "total_claimed_fee_x_amount",
+            "docs": ["Account authorized to claim fees from this position"],
+            "type": "u64"
+          },
+          {
+            "name": "total_claimed_fee_y_amount",
+            "docs": ["Total unclaimed fees earned in token Y"],
+            "type": "u64"
+          },
+          {
+            "name": "_reserved",
+            "docs": ["Reserved space for future use"],
+            "type": {
+              "array": ["u8", 128]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "PositionCreate",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "lb_pair",
+            "type": "pubkey"
+          },
+          {
+            "name": "position",
+            "type": "pubkey"
+          },
+          {
+            "name": "owner",
+            "type": "pubkey"
+          }
+        ]
+      }
+    },
+    {
+      "name": "ProtocolFee",
+      "docs": [
+        "Protocol fee accumulator storing fees collected from swaps.",
+        "",
+        "Fees are tracked separately for each token to maintain accurate accounting",
+        "and enable independent fee collection for X and Y tokens."
+      ],
+      "serialization": "bytemuck",
+      "repr": {
+        "kind": "c"
+      },
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "amount_x",
+            "docs": ["Accumulated protocol fees for token X"],
+            "type": "u64"
+          },
+          {
+            "name": "amount_y",
+            "docs": ["Accumulated protocol fees for token Y"],
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "StaticParameters",
+      "docs": [
+        "Static fee configuration parameters set by the protocol.",
+        "",
+        "These parameters remain constant during normal pair operation and control",
+        "the base fee structure and operational limits for the liquidity book pair."
+      ],
+      "serialization": "bytemuck",
+      "repr": {
+        "kind": "c"
+      },
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "base_factor",
+            "docs": ["Base factor for fee calculation formula"],
+            "type": "u16"
+          },
+          {
+            "name": "filter_period",
+            "docs": [
+              "Filter period for high frequency trading detection in seconds"
+            ],
+            "type": "u16"
+          },
+          {
+            "name": "decay_period",
+            "docs": ["Decay period for volatile fee reduction in seconds"],
+            "type": "u16"
+          },
+          {
+            "name": "reduction_factor",
+            "docs": [
+              "Reduction factor controlling volatile fee decrement rate"
+            ],
+            "type": "u16"
+          },
+          {
+            "name": "variable_fee_control",
+            "docs": ["Variable fee scaling factor based on market dynamics"],
+            "type": "u32"
+          },
+          {
+            "name": "max_volatility_accumulator",
+            "docs": ["Maximum volatility accumulator to cap volatile fees"],
+            "type": "u32"
+          },
+          {
+            "name": "min_bin_id",
+            "docs": ["Minimum supported bin ID for this pair"],
+            "type": "i32"
+          },
+          {
+            "name": "max_bin_id",
+            "docs": ["Maximum supported bin ID for this pair"],
+            "type": "i32"
+          },
+          {
+            "name": "protocol_share",
+            "docs": ["Protocol fee share in basis points"],
+            "type": "u16"
+          },
+          {
+            "name": "_padding",
+            "docs": ["Memory alignment padding"],
+            "type": {
+              "array": ["u8", 6]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "UserRewardInfo",
+      "docs": [
+        "Tracks per-bin farming reward accumulation and pending rewards for all supported reward tokens."
+      ],
+      "serialization": "bytemuck",
+      "repr": {
+        "kind": "c"
+      },
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "reward_per_token_completes",
+            "type": {
+              "array": ["u128", 2]
+            }
+          },
+          {
+            "name": "reward_pendings",
+            "type": {
+              "array": ["u64", 2]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "VariableParameters",
+      "docs": [
+        "Variable fee parameters that adjust based on market dynamics.",
+        "",
+        "These parameters are updated during trading operations to reflect market",
+        "volatility and recent trading activity patterns."
+      ],
+      "serialization": "bytemuck",
+      "repr": {
+        "kind": "c"
+      },
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "volatility_accumulator",
+            "docs": ["Current volatility accumulator measuring bin crossings"],
+            "type": "u32"
+          },
+          {
+            "name": "volatility_reference",
+            "docs": ["Decayed volatility reference for fee calculation"],
+            "type": "u32"
+          },
+          {
+            "name": "index_reference",
+            "docs": ["Reference bin ID from the last swap operation"],
+            "type": "i32"
+          },
+          {
+            "name": "_padding",
+            "docs": ["Memory alignment padding"],
+            "type": {
+              "array": ["u8", 4]
+            }
+          },
+          {
+            "name": "last_update_timestamp",
+            "docs": ["Timestamp of last parameter update"],
+            "type": "i64"
+          },
+          {
+            "name": "_padding_1",
+            "docs": ["Memory alignment padding"],
+            "type": {
+              "array": ["u8", 8]
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "constants": [
+    {
+      "name": "BASIS_POINT_MAX",
+      "docs": ["Smallest step between bin is 0.01%, 1 bps"],
+      "type": "i32",
+      "value": "10000"
+    },
+    {
+      "name": "BIN_ARRAY",
+      "docs": ["Seed constant for bin array PDA derivation"],
+      "type": "bytes",
+      "value": "[98, 105, 110, 95, 97, 114, 114, 97, 121]"
+    },
+    {
+      "name": "BIN_ARRAY_BITMAP_SEED",
+      "docs": ["Seed constant for bin array bitmap extension PDA derivation"],
+      "type": "bytes",
+      "value": "[98, 105, 116, 109, 97, 112]"
+    },
+    {
+      "name": "BIN_ARRAY_BITMAP_SIZE",
+      "docs": [
+        "Number of bin arrays that can be tracked in a single bitmap slot"
+      ],
+      "type": "i32",
+      "value": "512"
+    },
+    {
+      "name": "FEE_PRECISION",
+      "type": "u64",
+      "value": "1000000000"
+    },
+    {
+      "name": "MAX_BASE_FACTOR_STEP",
+      "docs": [
+        "Maximum allowed change in base factor per update (100 bps = 1%)"
+      ],
+      "type": "u16",
+      "value": "100"
+    },
+    {
+      "name": "MAX_BIN_ID",
+      "docs": ["Maximum bin ID supported. Computed based on 1 bps."],
+      "type": "i32",
+      "value": "443636"
+    },
+    {
+      "name": "MAX_FEE_RATE",
+      "docs": ["Maximum fee rate. 10%"],
+      "type": "u64",
+      "value": "100000000"
+    },
+    {
+      "name": "MAX_PROTOCOL_SHARE",
+      "docs": ["Maximum protocol share of the fee. 25%"],
+      "type": "u16",
+      "value": "2500"
+    },
+    {
+      "name": "MIN_BIN_ID",
+      "docs": ["Minimum bin ID supported. Computed based on 1 bps."],
+      "type": "i32",
+      "value": "-443636"
+    },
+    {
+      "name": "MIN_FEE_UPDATE_WINDOW",
+      "docs": [
+        "Minimum time window in seconds between fee parameter updates (0 = no restriction)"
+      ],
+      "type": "i64",
+      "value": "0"
+    },
+    {
+      "name": "POSITION_SEED",
+      "type": "bytes",
+      "value": "[112, 111, 115, 105, 116, 105, 111, 110]"
+    },
+    {
+      "name": "SEED",
+      "docs": ["Seed constant for liquidity book pair PDA derivation"],
+      "type": "string",
+      "value": "\"anchor\""
+    }
+  ]
+}
